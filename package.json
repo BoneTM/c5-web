@@ -1,5 +1,5 @@
 {
-  "name": "pug-web",
+  "name": "c5",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -7,18 +7,31 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@mdi/font": "^3.6.95",
     "axios": "^0.19.2",
-    "element-ui": "^2.13.1",
+    "js-cookie": "^2.2.1",
+    "normalize.css": "^8.0.1",
+    "nprogress": "^0.2.0",
     "prettier": "^2.0.5",
+    "roboto-fontface": "*",
+    "stompjs": "^2.3.3",
+    "vee-validate": "^3.3.7",
     "vue": "^2.6.11",
     "vue-cli-configjs": "^2.0.0",
-    "vue-router": "^3.1.6"
+    "vue-clipboard2": "^0.3.1",
+    "vue-router": "^3.1.6",
+    "vuetify": "^2.2.11",
+    "vuetify-confirm": "^2.0.5",
+    "vuetify-toast-snackbar": "https://github.com/jaredhan418/vuetify-toast-snackbar.git#master",
+    "vuex": "^3.4.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-router": "~4.3.0",
     "@vue/cli-service": "~4.3.0",
     "sass": "^1.26.3",
     "sass-loader": "^8.0.2",
-    "vue-template-compiler": "^2.6.11"
+    "vue-cli-plugin-vuetify": "~2.0.6",
+    "vue-template-compiler": "^2.6.11",
+    "vuetify-loader": "^1.3.0"
   }
 }
