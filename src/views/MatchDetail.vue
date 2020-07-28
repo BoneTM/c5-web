@@ -10,6 +10,11 @@
         disable-pagination
         hide-default-footer
       >
+        <template v-slot:item.name="{ item }">
+          <v-btn text small @click="onPlayer(item.steam64)" color="primary">
+            {{ item.name }}
+          </v-btn>
+        </template>
         <template v-slot:item.firstkill="{ item }">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
@@ -76,7 +81,7 @@
         </template>
       </v-data-table>
 
-      <div class="text-h1 text-center" v-if="teamIndex === 0 && match.team1Score">
+      <div class="text-h1 text-center" v-if="teamIndex === 0">
         {{ `${match.team1Score} : ${match.team2Score}` }}
       </div>
     </template>
@@ -105,7 +110,7 @@ export default {
         { text: '残局', value: 'v', sortable: false },
       ],
       players: [[], []],
-      match: {},
+      match: { team1Score: 0, team2Score: 0 },
       loading: true,
     };
   },
@@ -126,6 +131,9 @@ export default {
     },
     goBack() {
       this.$router.push({ path: '/' });
+    },
+    onPlayer(steam) {
+      this.$router.push('/profile/' + steam);
     },
   },
 };

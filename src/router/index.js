@@ -47,7 +47,7 @@ const routes = [
     redirect: '/index',
     children: [
       {
-        path: ':username',
+        path: ':steam',
         name: 'Profile',
         component: () => import('@/views/Profile'),
       },
@@ -66,6 +66,28 @@ const routes = [
         path: ':matchId',
         name: 'MatchDetail',
         component: () => import('@/views/MatchDetail'),
+      },
+    ],
+  },
+  {
+    path: '/admin/user',
+    component: Layout,
+    children: [
+      {
+        path: '',
+        name: 'AdminUser',
+        component: () => import('@/views/admin/User'),
+      },
+    ],
+  },
+  {
+    path: '/admin/server',
+    component: Layout,
+    children: [
+      {
+        path: '',
+        name: 'AdminServer',
+        component: () => import('@/views/admin/Server'),
       },
     ],
   },

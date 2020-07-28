@@ -2,7 +2,7 @@
   <div>
     <v-app id="inspire">
       <v-navigation-drawer v-model="drawer" app clipped>
-        <v-list dense>
+        <v-list dense nav>
           <v-list-item
             link
             v-for="(item, index) in navigation"
@@ -16,169 +16,45 @@
               <v-list-item-title>{{ item.text }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
+          <v-list-group prepend-icon="mdi-cog" v-if="token" no-action>
+            <template v-slot:activator>
+              <v-list-item-content>
+                <v-list-item-title>管理面板</v-list-item-title>
+              </v-list-item-content>
+            </template>
+
+            <v-list-item link to="/code">
+              <v-list-item-content>
+                <v-list-item-title>会员卡密</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item link to="/admin/server">
+              <v-list-item-content>
+                <v-list-item-title>服务器</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list-group>
         </v-list>
       </v-navigation-drawer>
 
       <v-app-bar app color="indigo" dark clipped-left>
         <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-        <v-toolbar-title>GOD</v-toolbar-title>
+        <v-toolbar-title>{{ sitename }}</v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-menu bottom offset-y>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn icon v-bind="attrs" v-on="on">
-              <v-icon>mdi-account</v-icon>
-            </v-btn>
-          </template>
-          <v-card v-if="username">
-            <v-list>
-              <v-list-item>
-                <v-list-item-content>
-                  <v-list-item-title>{{ username }}</v-list-item-title>
-                  <v-list-item-subtitle>
-                    会员时效:{{ vip }}
-                  </v-list-item-subtitle>
-                </v-list-item-content>
-                <v-list-item-action>
-                  <v-btn icon>
-                    <v-tooltip bottom>
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-btn
-                          icon
-                          v-bind="attrs"
-                          v-on="on"
-                          @click="codeDialogVisible = true"
-                        >
-                          <v-icon>mdi-wallet</v-icon>
-                        </v-btn>
-                      </template>
-                      <span>使用激活码</span>
-                    </v-tooltip>
-                  </v-btn>
-                </v-list-item-action>
-              </v-list-item>
-            </v-list>
-
-            <v-divider></v-divider>
-
-            <v-card-actions>
-              <v-btn
-                color="primary"
-                text
-                to="/code"
-                v-if="roles.includes('ROLE_ADMIN')"
-              >
-                激活码管理
-              </v-btn>
-              <v-spacer></v-spacer>
-              <v-btn color="primary" text @click="onLogout">退出登录</v-btn>
-            </v-card-actions>
-          </v-card>
-          <v-list v-else>
-            <v-list-item @click="loginDialogVisible = true">
-              <v-list-item-title>登陆</v-list-item-title>
-            </v-list-item>
-            <v-list-item @click="registerDialogVisible = true">
-              <v-list-item-title>注册</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
+        <v-btn icon @click="loginDialogVisible = true">
+          <v-icon>mdi-account</v-icon>
+        </v-btn>
       </v-app-bar>
-
       <v-main>
         <router-view></router-view>
       </v-main>
     </v-app>
-    <v-dialog v-model="registerDialogVisible" persistent max-width="300px">
-      <v-card>
-        <v-card-title>
-          <span class="headline">注册一波</span>
-        </v-card-title>
-        <v-card-text>
-          <ValidationObserver
-            ref="registerObserver"
-            v-slot="{ validate, reset }"
-          >
-            <v-container>
-              <v-row>
-                <v-col cols="12">
-                  <ValidationProvider
-                    v-slot="{ errors }"
-                    name="用户名"
-                    rules="required"
-                  >
-                    <v-text-field
-                      label="用户名"
-                      :error-messages="errors"
-                      v-model="registerForm.username"
-                    ></v-text-field>
-                  </ValidationProvider>
-                </v-col>
-                <v-col cols="12">
-                  <ValidationProvider
-                    v-slot="{ errors }"
-                    name="密码"
-                    rules="required"
-                  >
-                    <v-text-field
-                      label="密码"
-                      :error-messages="errors"
-                      v-model="registerForm.password"
-                      type="password"
-                    ></v-text-field>
-                  </ValidationProvider>
-                </v-col>
-                <v-col cols="12">
-                  <ValidationProvider
-                    v-slot="{ errors }"
-                    name="确认密码"
-                    rules="required"
-                  >
-                    <v-text-field
-                      label="确认密码"
-                      :error-messages="errors"
-                      v-model="registerForm.checkPass"
-                      type="password"
-                    ></v-text-field>
-                  </ValidationProvider>
-                </v-col>
-                <v-col cols="12">
-                  <ValidationProvider
-                    v-slot="{ errors }"
-                    name="绑定码"
-                    rules="required"
-                  >
-                    <v-text-field
-                      label="绑定码"
-                      :error-messages="errors"
-                      v-model="registerForm.code"
-                      required
-                    ></v-text-field>
-                  </ValidationProvider>
-                </v-col>
-              </v-row>
-            </v-container>
-          </ValidationObserver>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="blue" text @click="registerDialogVisible = false"
-            >取消</v-btn
-          >
-          <v-btn
-            color="blue"
-            text
-            @click="onRegister"
-            :loading="registerButtonLoading"
-            >注册</v-btn
-          >
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+
     <v-dialog v-model="loginDialogVisible" persistent max-width="300px">
       <v-card>
-        <v-card-title>登陆一波</v-card-title>
+        <v-card-title>管理员登录</v-card-title>
         <v-card-text>
-          <v-form v-model="loginValid">
+          <v-form>
             <ValidationObserver
               ref="loginObserver"
               v-slot="{ validate, reset }"
@@ -188,11 +64,11 @@
                   <v-col cols="12">
                     <ValidationProvider
                       v-slot="{ errors }"
-                      name="用户名"
+                      name="账号"
                       rules="required"
                     >
                       <v-text-field
-                        label="用户名"
+                        label="账号"
                         :error-messages="errors"
                         v-model="loginForm.username"
                       ></v-text-field>
@@ -205,8 +81,8 @@
                       rules="required"
                     >
                       <v-text-field
-                        label="密码"
                         type="password"
+                        label="密码"
                         :error-messages="errors"
                         v-model="loginForm.password"
                       ></v-text-field>
@@ -233,58 +109,15 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="codeDialogVisible" persistent max-width="300px">
-      <v-card>
-        <v-card-title>
-          <span class="headline">激活一波</span>
-        </v-card-title>
-        <v-card-text>
-          <ValidationObserver ref="codeObserver" v-slot="{ validate, reset }">
-            <v-container>
-              <v-row>
-                <v-col cols="12">
-                  <ValidationProvider
-                    v-slot="{ errors }"
-                    name="激活码"
-                    rules="required"
-                  >
-                    <v-text-field
-                      label="激活码"
-                      v-model="codeForm.code"
-                      :error-messages="errors"
-                    >
-                    </v-text-field>
-                  </ValidationProvider>
-                </v-col>
-              </v-row>
-            </v-container>
-          </ValidationObserver>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="blue" text @click="codeDialogVisible = false">
-            取消
-          </v-btn>
-          <v-btn color="blue" text @click="onCode" :loading="codeButtonLoading">
-            激活
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex';
-import { register } from '../api/user';
+import { changeNickname, register, updateUser } from '../api/user';
 import { useCode } from '../api/code';
 import { required, email, max } from 'vee-validate/dist/rules';
-import {
-  extend,
-  ValidationObserver,
-  ValidationProvider,
-  setInteractionMode,
-} from 'vee-validate';
+import { extend, ValidationObserver, ValidationProvider } from 'vee-validate';
 
 extend('required', {
   ...required,
@@ -298,7 +131,7 @@ extend('max', {
 export default {
   name: 'Layout',
   computed: {
-    ...mapGetters(['username', 'roles', 'vip']),
+    ...mapGetters(['sitename', 'token']),
   },
   components: {
     ValidationProvider,
@@ -328,34 +161,13 @@ export default {
       drawer: true,
       navigation: [
         { icon: 'mdi-home', text: '首页', path: '/index' },
-        { icon: 'mdi-home', text: '比赛', path: '/match' },
+        { icon: 'mdi-view-list', text: '比赛', path: '/match' },
       ],
       activeIndex: 1,
       isCollapse: false,
-      loginValid: true,
-      loginForm: { username: '', password: '' },
-      registerForm: { username: '', password: '', checkPass: '', code: '' },
-      codeForm: { code: '' },
-      registerFormRules: {
-        username: {
-          required: true,
-          message: '请输入用户名',
-          trigger: 'blur',
-        },
-        password: [{ validator: validatePass, trigger: 'blur' }],
-        checkPass: [{ validator: validatePass2, trigger: 'blur' }],
-        code: {
-          required: true,
-          message: '请输入绑定码',
-          trigger: 'blur',
-        },
-      },
+      loginForm: { username: '', password:'' },
       loginDialogVisible: false,
       loginButtonLoading: false,
-      registerDialogVisible: false,
-      codeButtonLoading: false,
-      codeDialogVisible: false,
-      registerButtonLoading: false,
     };
   },
   methods: {
@@ -365,59 +177,19 @@ export default {
 
       this.loginButtonLoading = true;
       try {
-        await this.$store.dispatch('user/login', this.loginForm);
-        await this.$store.dispatch('user/getInfo');
+        await this.$store.dispatch('admin/login', this.loginForm);
         this.loginDialogVisible = false;
       } catch (e) {
         console.log(e);
       }
       this.loginButtonLoading = false;
     },
-    async onRegister() {
-      const valid = await this.$refs.registerObserver.validate();
-      if (!valid) return;
-
-      this.registerButtonLoading = true;
-      try {
-        const { username, password, code } = this.registerForm;
-        await register({ username, password, code });
-        this.$toast('注册成功');
-        this.registerDialogVisible = false;
-      } catch (e) {
-        console.log(e);
-      }
-      this.registerButtonLoading = false;
-      // this.$refs[formName].validate(async (valid) => {
-      //   if (valid) {
-      //     const { username, password, code } = this.registerForm;
-      //     await register({ username, password, code });
-      //   }
-      //
-      //   this.registerButtonLoading = false;
-      // });
-    },
-    onProfile() {
-      this.$router.push({ path: '/profile/Bone' });
-    },
     onLogout() {
       this.$confirm('确定退出当前账号吗?').then((res) => {
         if (res) {
-          this.$store.dispatch('user/resetToken');
+          this.$store.dispatch('admin/resetToken');
         }
       });
-    },
-    async onCode() {
-      const valid = await this.$refs.codeObserver.validate();
-      if (!valid) return;
-
-      this.codeButtonLoading = true;
-      try {
-        const { data } = await useCode(this.codeForm);
-        this.$toast(data);
-        this.codeDialogVisible = false;
-        await this.$store.dispatch('user/getInfo');
-      } catch (e) {}
-      this.codeButtonLoading = false;
     },
   },
 };

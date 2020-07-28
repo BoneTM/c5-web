@@ -20,14 +20,9 @@
         {{ item.endTime }}
       </template>
       <template v-slot:item.actions="{ item }">
-        <v-tooltip bottom>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn icon @click="onRow(item)" x-small v-bind="attrs" v-on="on">
-              <v-icon>mdi-format-list-bulleted</v-icon>
-            </v-btn>
-          </template>
-          <span>查看详情</span>
-        </v-tooltip>
+        <v-btn color="primary" text x-small @click="onRow(item)">
+          查看详情
+        </v-btn>
       </template>
     </v-data-table>
   </div>
@@ -51,7 +46,7 @@ export default {
   async mounted() {
     this.loading = true;
     const { data } = await getMatches();
-    this.list = data;
+    this.list = data.content;
     this.loading = false;
   },
   methods: {

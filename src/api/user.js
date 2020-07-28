@@ -10,7 +10,7 @@ export function login(data) {
 
 export function getInfo(params) {
     return request({
-        url: '/user/info',
+        url: '/admin/info',
         method: 'get',
         params
     })
@@ -19,6 +19,20 @@ export function register(data) {
     return request({
         url: '/user',
         method: 'post',
+        data
+    })
+}
+export function updateUser(data) {
+    return request({
+        url: '/user',
+        method: 'put',
+        data
+    })
+}
+export function changeNickname(data) {
+    return request({
+        url: '/user/nickname',
+        method: 'put',
         data
     })
 }
